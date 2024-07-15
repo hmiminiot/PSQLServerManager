@@ -1,14 +1,8 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PSQLServerManager
 {
@@ -17,55 +11,66 @@ namespace PSQLServerManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string workingDir = "";
+        private Process? process = null;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void CheckForExistingProcess()
         {
-            string command = "pg_ctl -D \"C:\\Program Files\\PostgreSQL\\16\\data\" start";
-
-            textBox1.Text = command;
-
-            RunCmdCommand(command);
+            process?.Dispose();
         }
 
-        private void RunCmdCommand(string command)
+        private async Task RunCmdCommand(string command)
         {
             try
             {
-                string cmdText = $"\"{command}\"";
-                ProcessStartInfo processStartInfo = new("cmd", $"/c {command}")
+                CheckForExistingProcess();
+                ProcessStartInfo processStartInfo = new()
                 {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    WorkingDirectory = "C:\\Program Files\\PostgreSQL\\16\\bin"
+                    FileName = @"C:\Windows\System32\cmd.exe",
+                    Arguments = $"/c \"{command}\""
                 };
 
-                Process process = new()
+                process = new()
                 {
-                    StartInfo = processStartInfo
+                    StartInfo = processStartInfo,
+                    EnableRaisingEvents = true
                 };
+
+                process.OutputDataReceived += new DataReceivedEventHandler((sender, dataEvent) =>
+                {
+                    if (!string.IsNullOrEmpty(dataEvent.Data))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            tbOutput.Text += dataEvent.Data + Environment.NewLine;
+                        });
+                    }
+                });
+
+                process.ErrorDataReceived += new DataReceivedEventHandler((sender, dataEvent) =>
+                {
+                    if (!string.IsNullOrEmpty(dataEvent.Data))
+                    {
+                        Dispatcher.Invoke(() => 
+                        {
+                            tbError.Text += dataEvent.Data + Environment.NewLine;
+                        });
+                    }
+                });
 
                 process.Start();
-
-                string output = "";
-
-                do
-                {
-                    //var processTest = process.StandardOutput;
-                    //var test = processTest.Peek();
-                    //output += processTest.ReadLine() ?? "";
-                } while (process.StandardOutput.EndOfStream is false);
-
-                string error = "";//process.StandardError.ReadToEnd();
-
-                process.WaitForExit();
-
-                MessageBox.Show($"{(string.IsNullOrWhiteSpace(error) ? $"Output: {output}" : $"\nError: {error}")}");
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                await process.WaitForExitAsync();
             }
             catch (Exception ex)
             {
@@ -73,22 +78,50 @@ namespace PSQLServerManager
             }
         }
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            string command = "pg_ctl -D \"C:\\Program Files\\PostgreSQL\\16\\data\" stop";
-
-            textBox1.Text = command;
-
-            RunCmdCommand(command);
+            ResetUi();
+            string command = $"{GetExecutablePath()} -D \"C:\\Program Files\\PostgreSQL\\16\\data\" start";
+            await RunCmdCommand(command);
         }
 
-        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            string command = "pg_ctl -D \"C:\\Program Files\\PostgreSQL\\16\\data\" restart";
+            ResetUi();
+            string command = $"{GetExecutablePath()} -D \"C:\\Program Files\\PostgreSQL\\16\\data\" stop";
+            await RunCmdCommand(command);
+        }
 
-            textBox1.Text = command;
+        private async void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetUi();
+            string command = $"{GetExecutablePath()} -D \"C:\\Program Files\\PostgreSQL\\16\\data\" restart";
+            await RunCmdCommand(command);
+        }
 
-            RunCmdCommand(command);
+        private void ResetUi()
+        {
+            tbError.Text = tbOutput.Text = "";
+        }
+
+        private void binDirectoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog openFileDlg = new FolderBrowserDialog();
+            var result = openFileDlg.ShowDialog();
+            if (result.ToString() != string.Empty)
+            {
+                postgresBinDirectoryTextBox.Text = openFileDlg.SelectedPath;
+            }
+        }
+
+        //private void postgresBinDirectoryTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        //{
+        //    workingDir = postgresBinDirectoryTextBox.Text;
+        //}
+
+        private string GetExecutablePath()
+        {
+            return $"\"{workingDir}\\pg_ctl.exe\"";
         }
     }
 }

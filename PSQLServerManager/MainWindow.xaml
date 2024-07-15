@@ -42,7 +42,11 @@
             </Button.RenderTransform>
         </Button>
         <Label x:Name="applicationTitle" Content="PostgresSQL Server Manager Hub" HorizontalAlignment="Center" Height="67" Margin="40,25,0,0" VerticalAlignment="Top" Width="730" Grid.ColumnSpan="2" FontSize="24" FontWeight="Bold"/>
-        <TextBox x:Name="textBox1" Grid.Column="1" HorizontalAlignment="Left" Height="76" Margin="126,141,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="205"/>
+        <TextBox x:Name="tbOutput" HorizontalAlignment="Left" Height="77" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="602" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="postgresBinDirectoryTextBox" HorizontalAlignment="Left" Height="28" Margin="94,126,0,0" TextWrapping="Wrap" Text="C:\Program Files\PostgreSQL\16\bin" VerticalAlignment="Top" Width="211" Grid.ColumnSpan="2"/>
+        <Button x:Name="binDirectoryButton" Content="Open Folder" HorizontalAlignment="Left" Height="28" Margin="10,126,0,0" VerticalAlignment="Top" Width="79" Click="binDirectoryButton_Click"/>
+        <Label Content="Enter below the path to PostgresSQL Folder:" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="24" Margin="10,97,0,0" VerticalAlignment="Top" Width="295" AutomationProperties.Name="" RenderTransformOrigin="0.511,2.873" FontWeight="Bold"/>
+        <TextBox x:Name="tbError" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="87" Margin="10,241,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="602"/>
 
     </Grid>
 </Window>
