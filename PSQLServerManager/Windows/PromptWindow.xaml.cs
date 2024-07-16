@@ -1,4 +1,4 @@
-﻿using PSQLServerManager.Windows.Shared;
+﻿using PSQLServerManager.Extensions;
 using System.Windows;
 
 namespace PSQLServerManager
@@ -18,7 +18,7 @@ namespace PSQLServerManager
 
         private void btnBinDirectory_Click(object sender, RoutedEventArgs e)
         {
-            var chosenDirectory = this.OpenFilePicker();
+            var chosenDirectory = this.OpenFolderBrowser();
             OnDirectorySelected(chosenDirectory);
             Close();
         }

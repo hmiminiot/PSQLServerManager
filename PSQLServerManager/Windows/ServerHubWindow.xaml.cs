@@ -1,5 +1,6 @@
-﻿using PSQLServerManager.Service;
-using PSQLServerManager.Windows.Shared;
+﻿using PSQLServerManager.Extensions;
+using PSQLServerManager.Service;
+using System.IO;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 
@@ -33,30 +34,31 @@ namespace PSQLServerManager
             _commandRunnerService.StopServerCheck();
         }
 
-        private async void StartButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUi();
-            string command = $"{GetExecutablePath()} -D {GetDirectoryPath()} start"; 
-            await _commandRunnerService.RunCommand(command);
+            var directory = GetDirectoryPath();
+            string command = $"{GetExecutablePath()} -D {directory} start";
+            RunActionIfValidDirectory(async () => await _commandRunnerService.RunCommand(command));
         }
 
-        private async void StopButton_Click(object sender, RoutedEventArgs e)
+        private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUi();
             string command = $"{GetExecutablePath()} -D {GetDirectoryPath()} stop";
-            await _commandRunnerService.RunCommand(command);
+            RunActionIfValidDirectory(async () => await _commandRunnerService.RunCommand(command));
         }
 
-        private async void RestartButton_Click(object sender, RoutedEventArgs e)
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUi();
             string command = $"{GetExecutablePath()} -D {GetDirectoryPath()} restart";
-            await _commandRunnerService.RunCommand(command);
+            RunActionIfValidDirectory(async () => await _commandRunnerService.RunCommand(command));
         }
 
         private void Button_ChangeDirectory_Click(object sender, RoutedEventArgs e)
         {
-            ServerHubDirectory = tbWorkingDirectory.Text = this.OpenFilePicker();
+            ServerHubDirectory = tbWorkingDirectory.Text = this.OpenFolderBrowser(ServerHubDirectory);
         }
 
         private void HandleOnOutput(string output) 
@@ -93,16 +95,20 @@ namespace PSQLServerManager
 
         private string GetDirectoryPath()
         {
-            var isBinDirectory = ServerHubDirectory.EndsWith("bin", StringComparison.OrdinalIgnoreCase);
-            if (isBinDirectory)
-            {
-                return $"\"{ServerHubDirectory.Replace("bin", "data")}\"";
-            }
-            if (isBinDirectory is false)
+            return $"\"{ServerHubDirectory.Replace("bin", "data")}\"";
+        }
+
+        private void RunActionIfValidDirectory(Action action)
+        {
+            DirectoryInfo directoryInfo = new(ServerHubDirectory);
+            var files = directoryInfo.GetFiles();
+            var isValid = files.Any(f => f.Name.Contains("pg_ctl", StringComparison.OrdinalIgnoreCase));
+            if (isValid is false)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Path: {ServerHubDirectory} is not valid!\nPlease use the PostgreSQL Bin Directory."));
+                return;
             }
-            return "";
+            action();
         }
     }
 }
