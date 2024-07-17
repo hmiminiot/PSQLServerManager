@@ -41,8 +41,7 @@ namespace PSQLServerManager
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUi();
-            var directory = GetDirectoryPath();
-            string command = $"{GetExecutablePath()} -D {directory} start";
+            string command = $"{GetExecutablePath()} -D {GetDirectoryPath()} start";
             RunActionIfValidDirectory(async () => await _commandRunnerService.RunCommand(command));
         }
 
@@ -82,8 +81,8 @@ namespace PSQLServerManager
 
         private void OpenPromptWindow()
         {
-            PromptWindow promptWindow = new(ServerHubDirectory);
-            promptWindow.OnDirectorySelected += (directoryValue) => ServerHubDirectory = tbWorkingDirectory.Text = directoryValue;
+            PromptWindow promptWindow = new();
+            promptWindow.OnDirectorySelected += (workingDirectory) => ServerHubDirectory = workingDirectory;
             promptWindow.ShowDialog();
         }
 
@@ -109,7 +108,12 @@ namespace PSQLServerManager
             var isValid = files.Any(f => f.Name.Contains("pg_ctl", StringComparison.OrdinalIgnoreCase));
             if (isValid is false)
             {
-                Dispatcher.Invoke(() => MessageBox.Show($"Path: {ServerHubDirectory} is not valid!\nPlease use the PostgreSQL Bin Directory."));
+                Dispatcher.Invoke(() => MessageBox.Show(
+                    this,
+                    $"Path: {ServerHubDirectory} is not valid!\nPlease use the PostgreSQL Bin Directory.", 
+                    "Error with Path!", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Error));
                 return;
             }
             action();

@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PSQLServerManager"
         mc:Ignorable="d"
-        Title="PSQLServerManager" Height="120" Width="400"
+        Title="PSQLServerManager" Height="165" Width="400"
         Topmost="True" Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen"
         Icon="../Resources/icon.ico"
         >
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Label Content="Please select the bin directory for PostgresSQL" 
@@ -21,7 +22,7 @@
                Margin="5"
                FontWeight="Bold" 
                FontSize="14"/>
-        <Grid x:Name="BottomGrid" 
+        <Grid x:Name="MiddleGrid" 
                 Grid.Row="1"
                 Margin="10">
             <Grid.ColumnDefinitions>
@@ -37,6 +38,18 @@
                 Content="Open Folder" 
                 Click="OpenFolderButton_Click" 
                 FontSize="10"/>
+        </Grid>
+        <Grid
+            Grid.Row="2"
+            Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="65"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="PromptWindowOk"
+                    Grid.Column="1"
+                    Content="Ok"
+                    FontSize="10" Click="PromptWindowOk_Click"/>
         </Grid>
     </Grid>
 </Window>

@@ -20,7 +20,9 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="TopLeftGrid">
+        <Grid x:Name="TopLeftGrid"
+              Grid.Column="0"
+              Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="50"/>
@@ -52,20 +54,23 @@
         </Grid>
         <Grid x:Name="TopRightGrid"
               Grid.Column="1"
-              Height="25"
+              Height="30"
               VerticalAlignment="Top"
               HorizontalAlignment="Right"
-              Margin="10">
+              Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Ellipse x:Name="statusBar" 
                      Stroke="Black" 
-                     Fill="Gray"/>
+                     Fill="Gray"
+                     Width="15"
+                     Height="15"
+                     VerticalAlignment="Center"/>
             <Label Content="PostgreSQL Server Status"
                    Grid.Column="1"
-                   Margin="10, 0, 0, 0"/>
+                   VerticalContentAlignment="Center"/>
         </Grid>
         <TextBox x:Name="tbOutput" 
                  IsReadOnly="True"
