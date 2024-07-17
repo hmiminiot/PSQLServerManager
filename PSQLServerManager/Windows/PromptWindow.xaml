@@ -8,6 +8,7 @@
         Title="PSQLServerManager" Height="120" Width="400"
         Topmost="True" Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen"
+        Icon="../Resources/icon.ico"
         >
     <Grid>
         <Grid.RowDefinitions>

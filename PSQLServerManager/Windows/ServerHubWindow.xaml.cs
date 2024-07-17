@@ -1,4 +1,5 @@
 ﻿using PSQLServerManager.Extensions;
+using PSQLServerManager.Properties;
 using PSQLServerManager.Service;
 using System.IO;
 using System.Windows;
@@ -11,9 +12,8 @@ namespace PSQLServerManager
     /// </summary>
     public partial class ServerHubWindow : Window
     {
-        public string ServerHubDirectory;
+        public string ServerHubDirectory = Settings.Default.WorkingPath;
 
-        private readonly SettingsService _settingsService = new();
         private readonly CommandRunnerService _commandRunnerService = new();
 
         public ServerHubWindow()
@@ -26,7 +26,6 @@ namespace PSQLServerManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ServerHubDirectory = _settingsService.GetSettings();
             OpenPromptWindow();
             tbWorkingDirectory.Text = ServerHubDirectory;
             _commandRunnerService.RunServerCheck();
@@ -35,7 +34,8 @@ namespace PSQLServerManager
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _commandRunnerService.StopServerCheck();
-            _settingsService.SaveSettings(ServerHubDirectory);
+            Settings.Default.WorkingPath = ServerHubDirectory;
+            Settings.Default.Save();
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
