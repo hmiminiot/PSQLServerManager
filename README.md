@@ -11,6 +11,7 @@
 ![image](https://github.com/user-attachments/assets/41adf03c-dfec-45b9-ba82-b587b89f558b)
 
 3. If there are any issues with the path hit change directory and go to the proper path
+
 ![image](https://github.com/user-attachments/assets/4b3b50a9-6a35-4434-9195-998672cfc647)
 
 Enjoy :)
