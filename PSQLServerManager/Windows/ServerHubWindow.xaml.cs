@@ -11,7 +11,9 @@ namespace PSQLServerManager
     /// </summary>
     public partial class ServerHubWindow : Window
     {
-        public string ServerHubDirectory = @"C:\";
+        public string ServerHubDirectory;
+
+        private readonly SettingsService _settingsService = new();
         private readonly CommandRunnerService _commandRunnerService = new();
 
         public ServerHubWindow()
@@ -24,6 +26,7 @@ namespace PSQLServerManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            ServerHubDirectory = _settingsService.GetSettings();
             OpenPromptWindow();
             tbWorkingDirectory.Text = ServerHubDirectory;
             _commandRunnerService.RunServerCheck();
@@ -32,6 +35,7 @@ namespace PSQLServerManager
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _commandRunnerService.StopServerCheck();
+            _settingsService.SaveSettings(ServerHubDirectory);
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)

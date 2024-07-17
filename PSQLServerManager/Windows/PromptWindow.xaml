@@ -31,10 +31,10 @@
                 x:Name="tbBinDirectory"
                 Grid.Column="0"/>
             <Button 
-                x:Name="btnBinDirectory"
+                x:Name="OpenFolderButton"
                 Grid.Column="1"
                 Content="Open Folder" 
-                Click="btnBinDirectory_Click" 
+                Click="OpenFolderButton_Click" 
                 FontSize="10"/>
         </Grid>
     </Grid>

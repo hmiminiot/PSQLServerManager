@@ -26,7 +26,7 @@ namespace PSQLServerManager.Service
             _worker.CancelAsync();
         }
 
-        private void DoWork(object? sender, DoWorkEventArgs e)
+        private void DoWork(object sender, DoWorkEventArgs e)
         {
             Process[] processes; 
             while (e.Cancel is false)
@@ -38,7 +38,7 @@ namespace PSQLServerManager.Service
                     OnRunningChanged(isRunning);
                 }
                 IsRunning = isRunning;
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
         }
     }

@@ -14,9 +14,9 @@ namespace PSQLServerManager.Service
             _backgroundService.OnRunningChanged += HandleOnRunningChanged;
         }
 
-        public event Action<string> OnOutput = (value) => { };
-        public event Action<Exception> OnException = (value) => { };
-        public event Action<bool> OnRunningChanged = (value) => { };
+        public event Action<string> OnOutput = (stringValue) => { };
+        public event Action<Exception> OnException = (exceptionValue) => { };
+        public event Action<bool> OnRunningChanged = (booleanValue) => { };
 
         private void CheckForExistingProcess()
         {

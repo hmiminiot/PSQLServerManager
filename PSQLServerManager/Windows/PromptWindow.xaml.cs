@@ -16,16 +16,16 @@ namespace PSQLServerManager
             this.promptDirectory = promptDirectory;
         }
 
-        private void btnBinDirectory_Click(object sender, RoutedEventArgs e)
-        {
-            var chosenDirectory = this.OpenFolderBrowser();
-            OnDirectorySelected(chosenDirectory);
-            Close();
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             tbBinDirectory.Text = promptDirectory;
+        }
+
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var chosenDirectory = this.OpenFolderBrowser(promptDirectory);
+            OnDirectorySelected(chosenDirectory);
+            Close();
         }
     }
 }
