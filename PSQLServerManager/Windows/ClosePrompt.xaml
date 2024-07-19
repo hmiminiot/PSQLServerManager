@@ -1,0 +1,46 @@
+﻿<Window x:Class="PSQLServerManager.Windows.ClosePrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="ClosePromptWindow" 
+        Height="165" 
+        Width="400"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen">
+    <Grid
+        Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label
+            Content="The server is still running, do you want to turn it off?"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            FontWeight="Bold" 
+            FontSize="14"/>
+        <Grid
+            Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="ButtonYesCloseServer"
+                    Content="Yes" 
+                    Grid.Column="1" 
+                    HorizontalAlignment="Left" 
+                    Height="20" 
+                    Width="70" 
+                    VerticalAlignment="Bottom" Click="ButtonYesCloseServer_Click"/>
+            <Button x:Name="ButtonNoCloseServer"
+                    Content="No" 
+                    Grid.Column="1" 
+                    HorizontalAlignment="Right" 
+                    Height="20" 
+                    Width="70" 
+                    VerticalAlignment="Bottom" Click="ButtonNoCloseServer_Click"/>
+        </Grid>
+    </Grid>
+</Window>

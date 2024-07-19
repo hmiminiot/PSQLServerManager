@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
+﻿using PSQLServerManager.Properties;
 using System.Diagnostics;
+using System.IO;
 
 namespace PSQLServerManager.Service
 {
     public class CommandRunnerService
     {
 
-        private Process? process = null;
+        private Process process = null;
         private readonly BackgroundService _backgroundService = new();
 
         public CommandRunnerService()
@@ -17,6 +18,7 @@ namespace PSQLServerManager.Service
         public event Action<string> OnOutput = (stringValue) => { };
         public event Action<Exception> OnException = (exceptionValue) => { };
         public event Action<bool> OnRunningChanged = (booleanValue) => { };
+        public event Action OnInvalidDirectory = () => { };
 
         private void CheckForExistingProcess()
         {
@@ -34,7 +36,7 @@ namespace PSQLServerManager.Service
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    FileName = @"C:\Windows\System32\cmd.exe",
+                    FileName = @"cmd",
                     Arguments = $"/c \"{command}\""
                 };
 
@@ -71,6 +73,34 @@ namespace PSQLServerManager.Service
             }
         }
 
+        public void SendCommandToServer(string command)
+        {
+            RunActionIfValidDirectory(async () => await RunCommand($"{GetExecutablePath()} -D {GetDirectoryPath()} {command}"));
+        }
+
+        private static string GetExecutablePath()
+        {
+            return $"\"{Settings.Default.WorkingPath}\\pg_ctl.exe\"";
+        }
+
+        private static string GetDirectoryPath()
+        {
+            return $"\"{Settings.Default.WorkingPath.Replace("bin", "data")}\"";
+        }
+
+        private void RunActionIfValidDirectory(Action action)
+        {
+            DirectoryInfo directoryInfo = new(Settings.Default.WorkingPath);
+            var files = directoryInfo.GetFiles();
+            var isValid = files.Any(f => f.Name.Contains("pg_ctl", StringComparison.OrdinalIgnoreCase));
+            if (isValid is false)
+            {
+                OnInvalidDirectory();
+                return;
+            }
+            action();
+        }
+
         public void RunServerCheck()
         {
             _backgroundService.Start();
@@ -84,6 +114,11 @@ namespace PSQLServerManager.Service
         public void HandleOnRunningChanged(bool isRunning)
         {
             OnRunningChanged(isRunning);
+        }
+
+        public bool IsServerRunning()
+        {
+            return _backgroundService.IsRunning ?? false;
         }
     }
 }

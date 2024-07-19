@@ -7,24 +7,23 @@ namespace PSQLServerManager
     /// <summary>
     /// Interaction logic for PromptWindow.xaml
     /// </summary>
-    public partial class PromptWindow : Window
+    public partial class OpenPrompt : Window
     {
         public event Action<string> OnDirectorySelected = (workingDirectory) => { };
-        private readonly string promptDirectory = Settings.Default.WorkingPath;
-        public PromptWindow()
+        public OpenPrompt()
         {            
             InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            tbBinDirectory.Text = promptDirectory;
+            tbBinDirectory.Text = Settings.Default.WorkingPath;
         }
 
         private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            var chosenDirectory = this.OpenFolderBrowser(promptDirectory);
-            tbBinDirectory.Text = chosenDirectory;
+            var chosenDirectory = this.OpenFolderBrowser(Settings.Default.WorkingPath);
+            tbBinDirectory.Text = Settings.Default.WorkingPath = chosenDirectory;
             OnDirectorySelected(chosenDirectory);
         }
 
