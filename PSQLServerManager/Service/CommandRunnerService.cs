@@ -1,17 +1,19 @@
 ﻿using PSQLServerManager.Properties;
+using PSQLServerManager.Service.Interfaces;
 using System.Diagnostics;
 using System.IO;
 
 namespace PSQLServerManager.Service
 {
-    public class CommandRunnerService
+    public class CommandRunnerService : ICommandRunnerService
     {
 
         private Process process = null;
-        private readonly BackgroundService _backgroundService = new();
+        private readonly IBackgroundService _backgroundService;
 
-        public CommandRunnerService()
+        public CommandRunnerService(IBackgroundService backgroundService)
         {
+            _backgroundService = backgroundService;
             _backgroundService.OnRunningChanged += HandleOnRunningChanged;
         }
 
@@ -20,7 +22,7 @@ namespace PSQLServerManager.Service
         public event Action<bool> OnRunningChanged = (booleanValue) => { };
         public event Action OnInvalidDirectory = () => { };
 
-        private void CheckForExistingProcess()
+        private void DisposeExistingProcess()
         {
             process?.Dispose();
         }
@@ -29,14 +31,14 @@ namespace PSQLServerManager.Service
         {
             try
             {
-                CheckForExistingProcess();
+                DisposeExistingProcess();
                 ProcessStartInfo processStartInfo = new()
                 {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    FileName = @"cmd",
+                    FileName = "cmd",
                     Arguments = $"/c \"{command}\""
                 };
 
@@ -118,7 +120,7 @@ namespace PSQLServerManager.Service
 
         public bool IsServerRunning()
         {
-            return _backgroundService.IsRunning ?? false;
+            return _backgroundService.IsRunning();
         }
     }
 }

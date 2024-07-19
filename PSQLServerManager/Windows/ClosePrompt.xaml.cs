@@ -1,4 +1,5 @@
 ﻿using PSQLServerManager.Service;
+using PSQLServerManager.Service.Interfaces;
 using System.Windows;
 
 namespace PSQLServerManager.Windows
@@ -8,8 +9,8 @@ namespace PSQLServerManager.Windows
     /// </summary>
     public partial class ClosePrompt : Window
     {
-        private readonly CommandRunnerService _commandRunnerService;
-        public ClosePrompt(CommandRunnerService commandRunnerService)
+        private readonly ICommandRunnerService _commandRunnerService;
+        public ClosePrompt(ICommandRunnerService commandRunnerService)
         {
             InitializeComponent();
             _commandRunnerService = commandRunnerService;

@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using PSQLServerManager.Service.Interfaces;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace PSQLServerManager.Service
 {
-    public class BackgroundService
+    public class BackgroundService : IBackgroundService
     {
         private readonly BackgroundWorker _worker = new();
 
@@ -24,6 +25,11 @@ namespace PSQLServerManager.Service
         public void Stop()
         {
             _worker.CancelAsync();
+        }
+
+        bool IBackgroundService.IsRunning()
+        {
+            return IsRunning ?? false;
         }
 
         private void DoWork(object sender, DoWorkEventArgs e)

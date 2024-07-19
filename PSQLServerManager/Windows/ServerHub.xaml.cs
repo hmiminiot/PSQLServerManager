@@ -1,6 +1,6 @@
 ﻿using PSQLServerManager.Extensions;
 using PSQLServerManager.Properties;
-using PSQLServerManager.Service;
+using PSQLServerManager.Service.Interfaces;
 using PSQLServerManager.Windows;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
@@ -12,11 +12,11 @@ namespace PSQLServerManager
     /// </summary>
     public partial class ServerHub : Window
     {
-        private readonly CommandRunnerService _commandRunnerService = new();
-
-        public ServerHub()
+        private readonly ICommandRunnerService _commandRunnerService;
+        public ServerHub(ICommandRunnerService commandRunnerService)
         {
             InitializeComponent();
+            _commandRunnerService = commandRunnerService;
             _commandRunnerService.OnOutput += HandleOnOutput;
             _commandRunnerService.OnException += HandleOnException;
             _commandRunnerService.OnRunningChanged += HandleOnRunningChanged;
